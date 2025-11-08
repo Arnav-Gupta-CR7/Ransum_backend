@@ -24,7 +24,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "https://ransum.vercel.app",
+      "https://ransum-frontend.vercel.app/",
       "http://localhost:5173",
     ],
     methods: ["GET", "POST"],
