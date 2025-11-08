@@ -9,8 +9,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://ransum-frontend.vercel.app", // change this to your actual Vercel domain
-      "http://localhost:5173",     // keep for local testing
+      "*", // change this to your actual Vercel domain
+  
     ],
     methods: ["GET", "POST"],
     credentials: true,
@@ -24,8 +24,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "https://ransum-frontend.vercel.app",
-      "http://localhost:5173",
+      "*",
     ],
     methods: ["GET", "POST"],
   },
