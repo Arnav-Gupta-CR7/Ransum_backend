@@ -9,7 +9,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://ransum.vercel.app", // change this to your actual Vercel domain
+      "https://ransum-frontend.vercel.app", // change this to your actual Vercel domain
       "http://localhost:5173",     // keep for local testing
     ],
     methods: ["GET", "POST"],
@@ -24,7 +24,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "https://ransum-frontend.vercel.app/",
+      "https://ransum-frontend.vercel.app",
       "http://localhost:5173",
     ],
     methods: ["GET", "POST"],
@@ -53,23 +53,25 @@ io.on("connection", (socket) => {
 
   // --- WebRTC signaling ---
   socket.on("offer", (data) => {
-    if (socket.partner) io.to(socket.partner).emit("offer", data);
-  });
+  if (socket.partner) {
+    console.log(`Offer from ${socket.id} → ${socket.partner}`);
+    io.to(socket.partner).emit("offer", data);
+  }
+});
 
-  socket.on("answer", (data) => {
-    if (socket.partner) io.to(socket.partner).emit("answer", data);
-  });
+socket.on("answer", (data) => {
+  if (socket.partner) {
+    console.log(`Answer from ${socket.id} → ${socket.partner}`);
+    io.to(socket.partner).emit("answer", data);
+  }
+});
 
-  socket.on("ice-candidate", (data) => {
-    if (socket.partner) io.to(socket.partner).emit("ice-candidate", data);
-  });
+socket.on("ice-candidate", (data) => {
+  if (socket.partner) {
+    io.to(socket.partner).emit("ice-candidate", data);
+  }
+});
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-
-    if (waitingUser && waitingUser.id === socket.id) waitingUser = null;
-    if (socket.partner) io.to(socket.partner).emit("partner-disconnected");
-  });
 });
 
 // ✅ Render uses a dynamic port
